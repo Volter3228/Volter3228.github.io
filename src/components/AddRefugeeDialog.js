@@ -22,6 +22,7 @@ const TextField = (props) => (
         margin="dense"
         type="text"
         size="small"
+        autoComplete="off"
         {...props}
     />
 );
@@ -31,6 +32,8 @@ const initialForm = {
     from: "",
     passportId: "",
     phoneNumber: "",
+    stayAddress: '',
+    stayNumber: '',
     car: {
         model: "",
         number: "",
@@ -40,7 +43,7 @@ const initialForm = {
 const AddRefugeeDialog = ({ onSubmit }) => {
     const [open, setOpen] = useState(false);
     const [form, setForm] = useState(initialForm);
-    const { request } = useHttp();
+    const { request, loading } = useHttp();
     const formRef = useRef();
 
     const handleClickOpen = () => {
@@ -94,7 +97,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                         <TextField
                             autoFocus
                             required
-                            label="Ім'я"
+                            label="ПІБ"
                             name="name"
                             value={form.name}
                             onChange={handleFormChange}
@@ -131,6 +134,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
                                 <TextField
+                                    required
                                     label="Модель"
                                     name="model"
                                     value={form.car.model}
@@ -140,6 +144,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
+                                    required
                                     label="Номер"
                                     name="number"
                                     value={form.car.number}
@@ -148,10 +153,37 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                                 />
                             </Grid>
                         </Grid>
+                        <Divider />
+                        <Typography
+                            variant="subtitle2"
+                            sx={{ paddingTop: "0.7rem" }}
+                        >
+                            Хост
+                        </Typography>
+                        <Grid container spacing={1}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Адреса"
+                                    name="stayAddress"
+                                    value={form.stayAddress}
+                                    onChange={handleFormChange}
+                                    sx={{ paddingBottom: "1rem" }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Номер телефону"
+                                    name="stayNumber"
+                                    value={form.stayNumber}
+                                    onChange={handleFormChange}
+                                    sx={{ paddingBottom: "1rem" }}
+                                />
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Відміна</Button>
-                        <Button variant="contained" onClick={handleSubmit}>
+                        <Button onClick={handleClose} disabled={loading}>Відміна</Button>
+                        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
                             Додати
                         </Button>
                     </DialogActions>

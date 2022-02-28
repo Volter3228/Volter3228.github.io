@@ -17,23 +17,26 @@ const TITLE = "Біженці";
 
 const COLUMNS = [
     { field: "id", hide: true },
-    { field: "name", headerName: "Ім'я", width: 350 },
-    { field: "from", headerName: "Звідки", width: 200 },
+    { field: "name", headerName: "ПІБ", width: 350 },
+    { field: "from", headerName: "Звідки", width: 250 },
     { field: "passportId", headerName: "Паспорт ID", width: 150 },
     { field: "phoneNumber", headerName: "Номер телефону", width: 150 },
     {
         field: "car",
         headerName: "Автомобіль",
-        width: 500,
-        valueFormatter: ({ value }) => `${value.model}${value.number}`,
+        width: 300,
+        valueFormatter: ({ value }) =>
+            value ? `${value.model}${value.number}` : "",
     },
+    { field: "stayAddress", headerName: "Адреса перебування", width: 350 },
+    { field: "stayNumber", headerName: "Номер хоста", width: 150 },
 ];
 
 const RefugeesTableDialog = () => {
     const [open, setOpen] = useState(false);
     const [fetchedRefugees, setFetchedRefugees] = useState([]);
     const [search, setSearch] = useState("");
-    const { request } = useHttp();
+    const { request, loading } = useHttp();
 
     const handleClickOpen = () => {
         getRefugees();
@@ -60,7 +63,7 @@ const RefugeesTableDialog = () => {
 
     const handleAddRefugeeSubmit = (refugee) => {
         setFetchedRefugees([refugee, ...fetchedRefugees]);
-    }
+    };
 
     const refugees = search
         ? fetchedRefugees.filter(
@@ -101,6 +104,10 @@ const RefugeesTableDialog = () => {
                 </AppBar>
                 {refugees.length ? (
                     <AppDataGrid columns={COLUMNS} rows={refugees} />
+                ) : loading ? (
+                    <Typography variant="h6" mt={2} ml={3}>
+                        Завантаження...
+                    </Typography>
                 ) : (
                     <Typography variant="h6" mt={2} ml={3}>
                         Нема результатів
