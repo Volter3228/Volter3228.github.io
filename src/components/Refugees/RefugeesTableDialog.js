@@ -6,11 +6,13 @@ import {
     Typography,
     IconButton,
     Toolbar,
+    Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import useHttp from "../hooks/useHttp";
-import AppDataGrid from "./AppDataGrid";
-import Search from "./Search";
+import DeleteIcon from "@mui/icons-material/Delete";
+import useHttp from "../../hooks/useHttp";
+import AppDataGrid from "../AppDataGrid";
+import Search from "../Search";
 import AddRefugeeDialog from "./AddRefugeeDialog";
 
 const TITLE = "Біженці";
@@ -36,6 +38,7 @@ const RefugeesTableDialog = () => {
     const [open, setOpen] = useState(false);
     const [fetchedRefugees, setFetchedRefugees] = useState([]);
     const [search, setSearch] = useState("");
+
     const { request, loading } = useHttp();
 
     const handleClickOpen = () => {
@@ -50,7 +53,6 @@ const RefugeesTableDialog = () => {
     const getRefugees = async () => {
         try {
             const res = await request("/refugee", "GET");
-            console.log(res);
             setFetchedRefugees(res.refugees);
         } catch (e) {
             console.log(e);
@@ -65,6 +67,18 @@ const RefugeesTableDialog = () => {
         setFetchedRefugees([refugee, ...fetchedRefugees]);
     };
 
+    const handleDeleteRefugee = async (_id) => {
+        try {
+            await request("/refugee/delete", "DELETE", { _id });
+            const index = fetchedRefugees.findIndex(fr => fr._id === _id);
+            const updFetchedRefugees = [...fetchedRefugees];
+            updFetchedRefugees.splice(index, 1);
+            setFetchedRefugees(updFetchedRefugees);
+        } catch(e) {
+            console.log(e);
+        }
+    };
+
     const refugees = search
         ? fetchedRefugees.filter(
               (fr) =>
@@ -74,6 +88,30 @@ const RefugeesTableDialog = () => {
                       .indexOf(search.toLowerCase()) !== -1
           )
         : fetchedRefugees;
+
+    const actionsColumn = {
+        field: "actions",
+        headerName: "Дії",
+        
+        type: "number",
+        width: 90,
+        renderCell: (params) => {
+            return (
+                <Grid container justifyContent="center">
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        disabled={loading}
+                        onClick={() => handleDeleteRefugee(params.id)}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                </Grid>
+            );
+        },
+    };
+
+    const columns = [actionsColumn, ...COLUMNS];
 
     return (
         <div>
@@ -87,7 +125,6 @@ const RefugeesTableDialog = () => {
                             edge="start"
                             color="inherit"
                             onClick={handleClose}
-                            aria-label="close"
                         >
                             <CloseIcon />
                         </IconButton>
@@ -103,7 +140,7 @@ const RefugeesTableDialog = () => {
                     </Toolbar>
                 </AppBar>
                 {refugees.length ? (
-                    <AppDataGrid columns={COLUMNS} rows={refugees} />
+                    <AppDataGrid columns={columns} rows={refugees} />
                 ) : loading ? (
                     <Typography variant="h6" mt={2} ml={3}>
                         Завантаження...

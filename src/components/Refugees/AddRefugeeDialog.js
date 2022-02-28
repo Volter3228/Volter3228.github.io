@@ -13,7 +13,7 @@ import {
     Grid,
 } from "@mui/material";
 import AddCircle from "@mui/icons-material/AddCircle";
-import useHttp from "../hooks/useHttp";
+import useHttp from "../../hooks/useHttp";
 
 const TextField = (props) => (
     <MuiTextField
@@ -22,7 +22,9 @@ const TextField = (props) => (
         margin="dense"
         type="text"
         size="small"
-        autoComplete="off"
+        inputProps={{
+            autoComplete: 'off'
+        }}
         {...props}
     />
 );
@@ -89,7 +91,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                 <AddCircle />
             </IconButton>
             <Dialog onClose={handleClose} open={open} fullWidth>
-                <Box component="form" autoComplete="off" ref={formRef}>
+                <Box component="form" ref={formRef}>
                     <DialogTitle onClose={handleClose}>
                         Додати біженця
                     </DialogTitle>
@@ -134,7 +136,6 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
                                 <TextField
-                                    required
                                     label="Модель"
                                     name="model"
                                     value={form.car.model}
@@ -144,7 +145,6 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
-                                    required
                                     label="Номер"
                                     name="number"
                                     value={form.car.number}
@@ -163,6 +163,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
                                 <TextField
+                                    required
                                     label="Адреса"
                                     name="stayAddress"
                                     value={form.stayAddress}
@@ -172,6 +173,7 @@ const AddRefugeeDialog = ({ onSubmit }) => {
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
+                                    required
                                     label="Номер телефону"
                                     name="stayNumber"
                                     value={form.stayNumber}

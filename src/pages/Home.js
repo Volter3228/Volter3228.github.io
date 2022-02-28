@@ -1,4 +1,4 @@
-import RefugeesTableDialog from '../components/RefugeesTableDialog';
+import RefugeesTableDialog from '../components/Refugees/RefugeesTableDialog';
 
 const Home = () => {
     return (
